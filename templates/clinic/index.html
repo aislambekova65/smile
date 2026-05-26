@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Smile Estetic — {% if LANGUAGE_CODE == 'ky' %}Стоматологиялык борбор{% else %}Стоматологический центр, Бишкек{% endif %}{% endblock %}
+{% block title %}Smile Estetic — {% if LANGUAGE_CODE == 'ky' %}Стоматологиялык борбор{% else %}Стоматологический центр, Ош{% endif %}{% endblock %}
 
 {% block testimonials_modal_content %}
   {% for t in testimonials %}
@@ -26,7 +26,7 @@
       <div class="col-lg-6 hero-content">
         <div class="hero-badge">
           <i class="bi bi-patch-check-fill"></i>
-          {% if LANGUAGE_CODE == 'ky' %}Бишкектеги №1 стоматология{% else %}Стоматология №1 в Бишкеке{% endif %}
+          {% if LANGUAGE_CODE == 'ky' %}Оштогу №1 стоматология{% else %}Стоматология №1 в Оше{% endif %}
         </div>
         <h1 class="hero-title">{{ site_settings.hero_title }}</h1>
         <p class="hero-subtitle">{{ site_settings.hero_subtitle }}</p>
