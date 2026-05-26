@@ -1,0 +1,249 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Smile Estetic — Стоматологический центр{% endblock %}</title>
+  <meta name="description" content="Smile Estetic — профессиональная стоматология в Бишкеке.">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  {# Применяем тему ДО рендеринга, чтобы не было вспышки #}
+  <script>
+    (function(){
+      var t = localStorage.getItem('smile_theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'index' %}">
+      <img src="{% static 'images/Zub.png' %}" alt="Smile Estetic" height="48">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav mx-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">
+          {% if LANGUAGE_CODE == 'ky' %}Башкы бет{% else %}Главная{% endif %}
+        </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'services' %}">
+          {% if LANGUAGE_CODE == 'ky' %}Кызматтар{% else %}Услуги{% endif %}
+        </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'specialists' %}">
+          {% if LANGUAGE_CODE == 'ky' %}Адистер{% else %}Специалисты{% endif %}
+        </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'schedule' %}">
+          {% if LANGUAGE_CODE == 'ky' %}Иш графиги{% else %}Расписание{% endif %}
+        </a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">
+          {% if LANGUAGE_CODE == 'ky' %}Байланыш{% else %}Контакты{% endif %}
+        </a></li>
+      </ul>
+
+      <div class="nav-controls ms-lg-2">
+        {# Language switcher #}
+        <a href="{% url 'set_language' %}?lang=ru&next={{ request.path }}"
+           class="lang-btn {% if LANGUAGE_CODE == 'ru' %}active{% endif %}">RU</a>
+        <a href="{% url 'set_language' %}?lang=ky&next={{ request.path }}"
+           class="lang-btn {% if LANGUAGE_CODE == 'ky' %}active{% endif %}">KY</a>
+
+        {# ── THEME TOGGLE SWITCH ── #}
+        <div id="themeToggle" class="theme-toggle" role="button" tabindex="0"
+             title="Переключить тему" aria-label="Переключить тему">
+          <i class="bi bi-sun-fill icon-sun"></i>
+          <div class="theme-track"></div>
+          <i class="bi bi-moon-fill icon-moon"></i>
+          <span class="theme-toggle-text">
+            <span class="theme-lbl-light">Светлая</span>
+            <span class="theme-lbl-dark">Тёмная</span>
+          </span>
+        </div>
+
+        {# CTA Button #}
+        <a href="{% url 'contact' %}" class="btn-primary-custom" style="padding:0.42rem 1.1rem;font-size:0.86rem;">
+          <i class="bi bi-calendar-check"></i>
+          {% if LANGUAGE_CODE == 'ky' %}Жазылуу{% else %}Записаться{% endif %}
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MESSAGES ===== -->
+{% if messages %}
+<div class="messages-wrap">
+  {% for message in messages %}
+  <div class="alert alert-{% if 'error' in message.tags %}danger{% else %}success{% endif %} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ===== CONTENT ===== -->
+{% block content %}{% endblock %}
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <img src="{% static 'images/logo.svg' %}" alt="Smile Estetic" height="46"
+             style="filter:brightness(0) invert(1);opacity:.9;margin-bottom:1rem;display:block;">
+        <p>{{ site_settings.about|truncatewords:22 }}</p>
+        <div class="footer-social mt-3">
+          {% if site_settings.instagram %}<a href="{{ site_settings.instagram }}" target="_blank" rel="noopener"><i class="bi bi-instagram"></i></a>{% endif %}
+          {% if site_settings.facebook %}<a href="{{ site_settings.facebook }}" target="_blank" rel="noopener"><i class="bi bi-facebook"></i></a>{% endif %}
+          {% if site_settings.whatsapp %}<a href="https://wa.me/{{ site_settings.whatsapp }}" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i></a>{% endif %}
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-6">
+        <h5>{% if LANGUAGE_CODE == 'ky' %}Барактар{% else %}Навигация{% endif %}</h5>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'index' %}">{% if LANGUAGE_CODE == 'ky' %}Башкы бет{% else %}Главная{% endif %}</a></li>
+          <li><a href="{% url 'services' %}">{% if LANGUAGE_CODE == 'ky' %}Кызматтар{% else %}Услуги{% endif %}</a></li>
+          <li><a href="{% url 'specialists' %}">{% if LANGUAGE_CODE == 'ky' %}Адистер{% else %}Специалисты{% endif %}</a></li>
+          <li><a href="{% url 'schedule' %}">{% if LANGUAGE_CODE == 'ky' %}Иш графиги{% else %}Расписание{% endif %}</a></li>
+          <li><a href="{% url 'contact' %}">{% if LANGUAGE_CODE == 'ky' %}Байланыш{% else %}Контакты{% endif %}</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h5>{% if LANGUAGE_CODE == 'ky' %}Кызматтар{% else %}Услуги{% endif %}</h5>
+        <ul class="list-unstyled">
+          <li>Имплантация</li><li>Ортодонтия / Брекеты</li>
+          <li>Отбеливание</li><li>Терапевтическое лечение</li><li>Протезирование</li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h5>{% if LANGUAGE_CODE == 'ky' %}Байланыш{% else %}Контакты{% endif %}</h5>
+        <ul class="list-unstyled">
+          <li class="d-flex gap-2 mb-2"><i class="bi bi-geo-alt" style="color:var(--accent-light);margin-top:2px;flex-shrink:0;"></i><span>{{ site_settings.address }}</span></li>
+          <li class="d-flex gap-2 mb-2"><i class="bi bi-telephone" style="color:var(--accent-light);flex-shrink:0;"></i><a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a></li>
+          <li class="d-flex gap-2 mb-2"><i class="bi bi-clock" style="color:var(--accent-light);flex-shrink:0;"></i><span>{{ site_settings.working_hours }}</span></li>
+          {% if site_settings.email %}<li class="d-flex gap-2"><i class="bi bi-envelope" style="color:var(--accent-light);flex-shrink:0;"></i><a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></li>{% endif %}
+        </ul>
+      </div>
+    </div>
+    <hr class="footer-divider">
+    <p class="footer-bottom">© 2024 Smile Estetic. {% if LANGUAGE_CODE == 'ky' %}Бардык укуктар корголгон.{% else %}Все права защищены.{% endif %}</p>
+  </div>
+</footer>
+
+<!-- ===== SCROLL TO TOP ===== -->
+<button id="scrollTop" class="scroll-top" aria-label="Наверх">
+  <i class="bi bi-arrow-up"></i>
+</button>
+
+<!-- ===== ADMIN FAB (3 DOTS) ===== -->
+<div class="admin-fab">
+  <button class="admin-fab-btn" id="adminFabBtn" title="Управление">
+    <i class="bi bi-three-dots-vertical"></i>
+  </button>
+  <div class="admin-fab-menu" id="adminFabMenu">
+    {% if request.user.is_staff %}
+      <a href="/admin/" class="admin-fab-item">
+        <i class="bi bi-speedometer2"></i> Панель управления
+      </a>
+      <a href="{% url 'appointments_dashboard' %}" class="admin-fab-item">
+        <i class="bi bi-people-fill"></i> Записи клиентов
+      </a>
+      <div class="admin-fab-divider"></div>
+      <a href="/admin/logout/" class="admin-fab-item" style="color:#e53935;">
+        <i class="bi bi-box-arrow-right" style="color:#e53935;"></i> Выйти
+      </a>
+    {% else %}
+      <button class="admin-fab-item" data-bs-toggle="modal" data-bs-target="#adminLoginModal">
+        <i class="bi bi-lock-fill"></i> Войти в панель
+      </button>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ===== ADMIN LOGIN MODAL ===== -->
+{% if not request.user.is_staff %}
+<div class="modal fade" id="adminLoginModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-shield-lock" style="color:var(--primary);"></i>
+          Вход в панель управления
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="adminLoginError" class="alert alert-danger" style="display:none;border-radius:10px;font-size:0.88rem;"></div>
+        <form id="adminLoginForm" autocomplete="off">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Логин</label>
+            <div class="input-group">
+              <span class="input-group-text" style="background:var(--bg-section);border-color:var(--input-border);color:var(--text-muted);">
+                <i class="bi bi-person-fill"></i>
+              </span>
+              <input type="text" name="username" class="form-control" placeholder="admin" required autocomplete="username">
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Пароль</label>
+            <div class="input-group">
+              <span class="input-group-text" style="background:var(--bg-section);border-color:var(--input-border);color:var(--text-muted);">
+                <i class="bi bi-lock-fill"></i>
+              </span>
+              <input type="password" name="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+          </div>
+          <button type="submit" class="btn-primary-custom w-100 justify-content-center" style="padding:0.75rem;">
+            <i class="bi bi-box-arrow-in-right"></i> Войти
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ===== TESTIMONIALS MODAL ===== -->
+<div class="modal fade" id="testimonialsModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-chat-quote" style="color:var(--primary);"></i>
+          {% if LANGUAGE_CODE == 'ky' %}Бейтаптардын пикирлери{% else %}Отзывы пациентов{% endif %}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3" id="testimonialsModalBody">
+          {# Filled dynamically or server-side #}
+          {% block testimonials_modal_content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

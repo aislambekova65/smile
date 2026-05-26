@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" width="280" height="80">
+  <defs>
+    <linearGradient id="toothGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#64B5F6"/>
+      <stop offset="100%" stop-color="#00ACC1"/>
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7EC8E3"/>
+      <stop offset="100%" stop-color="#1BBED0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon background -->
+  <rect x="0" y="5" width="70" height="70" rx="14" ry="14" fill="url(#bgGrad)"/>
+
+  <!-- Tooth shape -->
+  <path d="M35 14 C27 14 20 21 20 30 C20 37 23 43 26 49 L30 64 C31 67 34 68 36 66 L38 60 C39 57 41 57 42 60 L44 66 C46 68 49 67 50 64 L54 49 C57 43 50 37 50 30 C50 21 43 14 35 14 Z" fill="white" opacity="0.95"/>
+  <!-- Smile on tooth -->
+  <path d="M27 38 Q35 44 43 38" stroke="url(#toothGrad)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- SMILE text -->
+  <text x="88" y="38" font-family="'Segoe UI', Arial, sans-serif" font-weight="800" font-size="26" fill="url(#toothGrad)" letter-spacing="2">SMILE</text>
+  <!-- ESTETIC text -->
+  <text x="89" y="60" font-family="'Segoe UI', Arial, sans-serif" font-weight="400" font-size="14" fill="#0288D1" letter-spacing="5">ESTETIC</text>
+  <!-- Decorative line -->
+  <line x1="88" y1="44" x2="265" y2="44" stroke="#e0f2fe" stroke-width="1"/>
+</svg>

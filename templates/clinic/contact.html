@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if LANGUAGE_CODE == 'ky' %}Байланыш{% else %}Контакты{% endif %} — Smile Estetic{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb-custom">
+      <a href="{% url 'index' %}">{% if LANGUAGE_CODE == 'ky' %}Башкы бет{% else %}Главная{% endif %}</a>
+      <span>/</span>
+      {% if LANGUAGE_CODE == 'ky' %}Байланыш{% else %}Контакты{% endif %}
+    </div>
+    <h1>{% if LANGUAGE_CODE == 'ky' %}Байланыш{% else %}Контакты{% endif %}</h1>
+    <p>{% if LANGUAGE_CODE == 'ky' %}Биз менен байланышыңыз же жазылыңыз{% else %}Свяжитесь с нами или запишитесь на приём{% endif %}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+
+      <!-- Contact info -->
+      <div class="col-lg-4">
+        <h4 style="font-weight:700;color:var(--text);margin-bottom:1.5rem;">
+          {% if LANGUAGE_CODE == 'ky' %}Биздин байланыштар{% else %}Наши контакты{% endif %}
+        </h4>
+
+        <div class="card-custom contact-info-card mb-3 fade-up">
+          <div class="contact-info-icon"><i class="bi bi-geo-alt-fill"></i></div>
+          <div>
+            <h6>{% if LANGUAGE_CODE == 'ky' %}Дарек{% else %}Адрес{% endif %}</h6>
+            <p>{{ site_settings.address }}</p>
+          </div>
+        </div>
+
+        <div class="card-custom contact-info-card mb-3 fade-up">
+          <div class="contact-info-icon"><i class="bi bi-telephone-fill"></i></div>
+          <div>
+            <h6>{% if LANGUAGE_CODE == 'ky' %}Телефон{% else %}Телефон{% endif %}</h6>
+            <p>
+              <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a>
+              {% if site_settings.phone2 %}<br>
+              <a href="tel:{{ site_settings.phone2 }}">{{ site_settings.phone2 }}</a>
+              {% endif %}
+            </p>
+          </div>
+        </div>
+
+        <div class="card-custom contact-info-card mb-3 fade-up">
+          <div class="contact-info-icon"><i class="bi bi-clock-fill"></i></div>
+          <div>
+            <h6>{% if LANGUAGE_CODE == 'ky' %}Иш убактысы{% else %}Часы работы{% endif %}</h6>
+            <p>{{ site_settings.working_hours }}</p>
+          </div>
+        </div>
+
+        {% if site_settings.email %}
+        <div class="card-custom contact-info-card mb-3 fade-up">
+          <div class="contact-info-icon"><i class="bi bi-envelope-fill"></i></div>
+          <div>
+            <h6>Email</h6>
+            <p><a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></p>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Social links -->
+        <div class="card-custom p-4 fade-up">
+          <h6 style="font-weight:700;color:var(--text);margin-bottom:1rem;">
+            {% if LANGUAGE_CODE == 'ky' %}Социалдык тармактар{% else %}Социальные сети{% endif %}
+          </h6>
+          <div class="d-flex gap-3">
+            {% if site_settings.instagram %}
+            <a href="{{ site_settings.instagram }}" target="_blank" rel="noopener"
+               style="width:44px;height:44px;border-radius:12px;background:var(--gradient);
+                      display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;
+                      text-decoration:none;transition:transform 0.2s;"
+               onmouseover="this.style.transform='translateY(-3px)'"
+               onmouseout="this.style.transform='translateY(0)'">
+              <i class="bi bi-instagram"></i>
+            </a>
+            {% endif %}
+            {% if site_settings.facebook %}
+            <a href="{{ site_settings.facebook }}" target="_blank" rel="noopener"
+               style="width:44px;height:44px;border-radius:12px;background:var(--gradient);
+                      display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;
+                      text-decoration:none;transition:transform 0.2s;"
+               onmouseover="this.style.transform='translateY(-3px)'"
+               onmouseout="this.style.transform='translateY(0)'">
+              <i class="bi bi-facebook"></i>
+            </a>
+            {% endif %}
+            {% if site_settings.whatsapp %}
+            <a href="https://wa.me/{{ site_settings.whatsapp }}" target="_blank" rel="noopener"
+               style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#25D366,#128C7E);
+                      display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem;
+                      text-decoration:none;transition:transform 0.2s;"
+               onmouseover="this.style.transform='translateY(-3px)'"
+               onmouseout="this.style.transform='translateY(0)'">
+              <i class="bi bi-whatsapp"></i>
+            </a>
+            {% endif %}
+            {% if not site_settings.instagram and not site_settings.facebook and not site_settings.whatsapp %}
+            <p style="color:var(--text-muted);font-size:0.88rem;">
+              {% if LANGUAGE_CODE == 'ky' %}Социалдык тармак жок{% else %}Социальные сети не указаны{% endif %}
+            </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Appointment form -->
+      <div class="col-lg-8 fade-up">
+        <div class="card-custom p-4">
+          <h4 style="font-weight:700;color:var(--text);margin-bottom:1.5rem;">
+            <i class="bi bi-clipboard-heart-fill" style="color:var(--primary);"></i>
+            {% if LANGUAGE_CODE == 'ky' %}Жазылуу формасы{% else %}Форма записи на приём{% endif %}
+          </h4>
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">{{ form.patient_name.label }} *</label>
+                {{ form.patient_name }}
+                {% if form.patient_name.errors %}
+                <div class="text-danger small mt-1">{{ form.patient_name.errors.0 }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ form.phone.label }} *</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ form.email.label }}</label>
+                {{ form.email }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ form.preferred_date.label }} *</label>
+                {{ form.preferred_date }}
+                {% if form.preferred_date.errors %}
+                <div class="text-danger small mt-1">{{ form.preferred_date.errors.0 }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ form.specialist.label }}</label>
+                {{ form.specialist }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ form.service.label }}</label>
+                {{ form.service }}
+              </div>
+              <div class="col-12">
+                <label class="form-label">{{ form.message.label }}</label>
+                {{ form.message }}
+              </div>
+              <div class="col-12 mt-2">
+                <button type="submit" class="btn-primary-custom w-100 justify-content-center" style="padding:0.85rem;">
+                  <i class="bi bi-send-fill"></i>
+                  {% if LANGUAGE_CODE == 'ky' %}Жазылуу жөнөтүү{% else %}Отправить заявку{% endif %}
+                </button>
+                <p style="font-size:0.8rem;color:var(--text-muted);text-align:center;margin-top:0.75rem;">
+                  {% if LANGUAGE_CODE == 'ky' %}
+                    Биз сизге 30 мүнөттүн ичинде чалабыз
+                  {% else %}
+                    Мы перезвоним вам в течение 30 минут в рабочее время
+                  {% endif %}
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Map placeholder -->
+        <div class="map-wrap mt-4 fade-up">
+          <div class="text-center">
+            <i class="bi bi-geo-alt-fill" style="font-size:2.5rem;color:var(--primary);display:block;margin-bottom:0.75rem;"></i>
+            <strong style="color:var(--text);">{{ site_settings.address }}</strong>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-top:0.5rem;">
+              {% if LANGUAGE_CODE == 'ky' %}
+                Картаны кошуу үчүн Google Maps embed кодун бул жерге коюңуз
+              {% else %}
+                Вставьте сюда embed-код Google Maps для отображения карты
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

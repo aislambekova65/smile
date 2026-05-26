@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Smile Estetic — {% if LANGUAGE_CODE == 'ky' %}Стоматологиялык борбор{% else %}Стоматологический центр, Бишкек{% endif %}{% endblock %}
+
+{% block testimonials_modal_content %}
+  {% for t in testimonials %}
+  <div class="col-lg-4 col-md-6">
+    <div class="testimonial-card h-100">
+      <div class="stars">
+        {% for i in "12345" %}<i class="bi bi-star{% if forloop.counter <= t.rating %}-fill{% endif %}"></i>{% endfor %}
+      </div>
+      <blockquote>"{{ t.text }}"</blockquote>
+      <div class="testimonial-author">— {{ t.name }}</div>
+    </div>
+  </div>
+  {% endfor %}
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 hero-content">
+        <div class="hero-badge">
+          <i class="bi bi-patch-check-fill"></i>
+          {% if LANGUAGE_CODE == 'ky' %}Бишкектеги №1 стоматология{% else %}Стоматология №1 в Бишкеке{% endif %}
+        </div>
+        <h1 class="hero-title">{{ site_settings.hero_title }}</h1>
+        <p class="hero-subtitle">{{ site_settings.hero_subtitle }}</p>
+
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{% url 'contact' %}" class="btn-primary-custom">
+            <i class="bi bi-calendar-check-fill"></i>
+            {% if LANGUAGE_CODE == 'ky' %}Жазылуу{% else %}Записаться{% endif %}
+          </a>
+          <a href="{% url 'services' %}" class="btn-outline-custom">
+            {% if LANGUAGE_CODE == 'ky' %}Кызматтар{% else %}Наши услуги{% endif %}
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="num" data-target="10" data-suffix="+">10+</span>
+            <span class="lbl">{% if LANGUAGE_CODE == 'ky' %}Жыл тажрыйба{% else %}Лет опыта{% endif %}</span>
+          </div>
+          <div class="hero-stat">
+            <span class="num" data-target="5000" data-suffix="+">5000+</span>
+            <span class="lbl">{% if LANGUAGE_CODE == 'ky' %}Бейтап{% else %}Пациентов{% endif %}</span>
+          </div>
+          <div class="hero-stat">
+            <span class="num" data-target="15" data-suffix="+">15+</span>
+            <span class="lbl">{% if LANGUAGE_CODE == 'ky' %}Адис{% else %}Специалистов{% endif %}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero illustration -->
+      <div class="col-lg-6 text-center hero-image-wrap d-none d-lg-block">
+        <div style="position:relative;display:inline-block;">
+          <div style="width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,0.1);
+                      border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;
+                      justify-content:center;backdrop-filter:blur(4px);margin:0 auto;">
+            <div style="width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,0.14);
+                        border:2px solid rgba(255,255,255,0.22);display:flex;align-items:center;
+                        justify-content:center;">
+              <svg viewBox="0 0 200 220" width="190" height="210">
+                <defs>
+                  <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="rgba(255,255,255,0.95)"/>
+                    <stop offset="100%" stop-color="rgba(255,255,255,0.72)"/>
+                  </linearGradient>
+                </defs>
+                <path d="M100 20 C78 20 58 38 58 65 C58 80 63 92 68 104 L79 152 C81 160 87 163 92 160 L99 144 C101 139 99 139 101 144 L108 160 C113 163 119 160 121 152 L132 104 C137 92 142 80 142 65 C142 38 122 20 100 20 Z" fill="url(#tg)" opacity="0.9"/>
+                <path d="M80 95 Q100 108 120 95" stroke="rgba(255,255,255,0.6)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="hero-card-float top-right">
+            <i class="bi bi-shield-check-fill" style="color:#69f0ae;font-size:1.2rem;"></i>
+            {% if LANGUAGE_CODE == 'ky' %}Коопсуз дарылоо{% else %}Безопасное лечение{% endif %}
+          </div>
+          <div class="hero-card-float bottom-left">
+            <i class="bi bi-star-fill" style="color:#FFB300;font-size:1rem;"></i>
+            <span>4.9 / 5.0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-5 fade-up">
+      <span class="section-label">{% if LANGUAGE_CODE == 'ky' %}Биздин кызматтар{% else %}Наши услуги{% endif %}</span>
+      <h2 class="section-title">{% if LANGUAGE_CODE == 'ky' %}Стоматологиялык кызматтар{% else %}Стоматологические услуги{% endif %}</h2>
+      <hr class="divider-gradient mx-auto">
+    </div>
+    <div class="row g-4">
+      {% for service in services %}
+      <div class="col-lg-4 col-md-6 fade-up">
+        <div class="card-custom service-card h-100">
+          <div class="service-icon"><i class="bi {{ service.icon }}"></i></div>
+          <h5>{{ service.name }}</h5>
+          <p>{{ service.description|truncatewords:18 }}</p>
+          {% if service.price_display %}<span class="service-price"><i class="bi bi-tag"></i> {{ service.price_display }}</span>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-5 fade-up">
+      <a href="{% url 'services' %}" class="btn-primary-custom">
+        {% if LANGUAGE_CODE == 'ky' %}Бардык кызматтар{% else %}Все услуги{% endif %} <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHY US ===== -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5 fade-up">
+        <span class="section-label">{% if LANGUAGE_CODE == 'ky' %}Эмне үчүн биз?{% else %}Почему мы?{% endif %}</span>
+        <h2 class="section-title">{% if LANGUAGE_CODE == 'ky' %}Биздин артыкчылыктарыбыз{% else %}Наши преимущества{% endif %}</h2>
+        <p class="section-subtitle">{{ site_settings.about }}</p>
+        <a href="{% url 'specialists' %}" class="btn-primary-custom mt-3">
+          {% if LANGUAGE_CODE == 'ky' %}Адистер{% else %}Наши врачи{% endif %} <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+      <div class="col-lg-7">
+        <div class="why-item fade-up">
+          <div class="why-icon"><i class="bi bi-award-fill"></i></div>
+          <div>
+            <h6>{% if LANGUAGE_CODE == 'ky' %}Тажрыйбалуу адистер{% else %}Опытные специалисты{% endif %}</h6>
+            <p>{% if LANGUAGE_CODE == 'ky' %}10+ жыл тажрыйбасы бар сертификацияланган дарыгерлер{% else %}Сертифицированные врачи с опытом работы 10+ лет{% endif %}</p>
+          </div>
+        </div>
+        <div class="why-item fade-up">
+          <div class="why-icon"><i class="bi bi-cpu-fill"></i></div>
+          <div>
+            <h6>{% if LANGUAGE_CODE == 'ky' %}Заманбап жабдуулар{% else %}Современное оборудование{% endif %}</h6>
+            <p>{% if LANGUAGE_CODE == 'ky' %}Дарылоо үчүн эң жаңы технологиялар{% else %}Новейшие технологии для точного и безопасного лечения{% endif %}</p>
+          </div>
+        </div>
+        <div class="why-item fade-up">
+          <div class="why-icon"><i class="bi bi-person-heart"></i></div>
+          <div>
+            <h6>{% if LANGUAGE_CODE == 'ky' %}Жеке мамиле{% else %}Индивидуальный подход{% endif %}</h6>
+            <p>{% if LANGUAGE_CODE == 'ky' %}Ар бир бейтапка жеке дарылоо планы{% else %}Персональный план лечения для каждого пациента{% endif %}</p>
+          </div>
+        </div>
+        <div class="why-item fade-up">
+          <div class="why-icon"><i class="bi bi-currency-dollar"></i></div>
+          <div>
+            <h6>{% if LANGUAGE_CODE == 'ky' %}Акылга сыярлык баалар{% else %}Доступные цены{% endif %}</h6>
+            <p>{% if LANGUAGE_CODE == 'ky' %}Ар кандай бюджет үчүн төлөм пландары{% else %}Гибкие планы оплаты для любого бюджета{% endif %}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SPECIALISTS ===== -->
+{% if specialists %}
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-5 fade-up">
+      <span class="section-label">{% if LANGUAGE_CODE == 'ky' %}Биздин команда{% else %}Наша команда{% endif %}</span>
+      <h2 class="section-title">{% if LANGUAGE_CODE == 'ky' %}Адистер{% else %}Наши специалисты{% endif %}</h2>
+      <hr class="divider-gradient mx-auto">
+    </div>
+    <div class="row g-4 justify-content-center">
+      {% for specialist in specialists %}
+      <div class="col-lg-3 col-md-6 fade-up">
+        <a href="{% url 'specialist_detail' specialist.pk %}" style="text-decoration:none;">
+          <div class="card-custom specialist-card h-100">
+            {% if specialist.photo %}<img src="{{ specialist.photo.url }}" alt="{{ specialist.name }}" class="specialist-photo">
+            {% else %}<div class="specialist-photo-placeholder">👨‍⚕️</div>{% endif %}
+            <h5>{{ specialist.name }}</h5>
+            <p class="specialist-specialty">{{ specialist.specialty }}</p>
+            <p class="specialist-exp"><i class="bi bi-briefcase"></i> {{ specialist.experience_years }} {% if LANGUAGE_CODE == 'ky' %}жыл{% else %}лет{% endif %}</p>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-5 fade-up">
+      <a href="{% url 'specialists' %}" class="btn-primary-custom">
+        {% if LANGUAGE_CODE == 'ky' %}Бардык адистер{% else %}Все специалисты{% endif %} <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ===== APPOINTMENT FORM ===== -->
+<section class="appointment-section" id="appointment">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5 text-white fade-up">
+        <span class="hero-badge mb-3 d-inline-flex">
+          <i class="bi bi-calendar-heart-fill"></i>
+          {% if LANGUAGE_CODE == 'ky' %}Онлайн жазылуу{% else %}Онлайн запись{% endif %}
+        </span>
+        <h2 style="font-weight:800;font-size:2.1rem;line-height:1.25;margin-bottom:1rem;">
+          {% if LANGUAGE_CODE == 'ky' %}Бүгүн эле жазылыңыз{% else %}Запишитесь прямо сейчас{% endif %}
+        </h2>
+        <p style="opacity:0.9;font-size:1rem;line-height:1.7;">
+          {% if LANGUAGE_CODE == 'ky' %}Биз сизге 30 мүнөттүн ичинде чалабыз{% else %}Мы перезвоним вам в течение 30 минут{% endif %}
+        </p>
+        <div class="d-flex flex-column gap-3 mt-4">
+          <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-telephone-fill" style="font-size:1.2rem;opacity:0.85;"></i>
+            <a href="tel:{{ site_settings.phone }}" style="color:#fff;font-size:1.05rem;font-weight:600;">{{ site_settings.phone }}</a>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-clock-fill" style="font-size:1.2rem;opacity:0.85;"></i>
+            <span style="opacity:0.9;">{{ site_settings.working_hours }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7 fade-up">
+        <div class="appointment-form-wrap">
+          <h4 style="font-weight:700;margin-bottom:1.5rem;color:var(--text);">
+            <i class="bi bi-clipboard-heart" style="color:var(--primary);"></i>
+            {% if LANGUAGE_CODE == 'ky' %}Жазылуу формасы{% else %}Форма записи{% endif %}
+          </h4>
+          <form method="post" action="{% url 'index' %}#appointment">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">{{ form.patient_name.label }} *</label>
+                {{ form.patient_name }}
+                {% if form.patient_name.errors %}<div class="text-danger small mt-1">{{ form.patient_name.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ form.phone.label }}</label>
+                {{ form.phone }}
+                {% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ form.specialist.label }}</label>
+                {{ form.specialist }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ form.service.label }}</label>
+                {{ form.service }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">{{ form.preferred_date.label }}</label>
+                {{ form.preferred_date }}
+                {% if form.preferred_date.errors %}<div class="text-danger small mt-1">{{ form.preferred_date.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">
+                  {% if LANGUAGE_CODE == 'ky' %}Убакыт{% else %}Время приёма{% endif %}
+                </label>
+                {{ form.preferred_time }}
+                <div id="time-slot-info" class="time-slot-info" style="min-height:18px;"></div>
+                {% if form.preferred_time.errors %}<div class="text-danger small mt-1">{{ form.preferred_time.errors.0 }}</div>{% endif %}
+              </div>
+              <div class="col-12">
+                <label class="form-label">{{ form.message.label }}</label>
+                {{ form.message }}
+              </div>
+              {% if form.non_field_errors %}
+              <div class="col-12">
+                <div class="alert alert-danger py-2 mb-0" style="border-radius:10px;font-size:0.88rem;">
+                  {{ form.non_field_errors.0 }}
+                </div>
+              </div>
+              {% endif %}
+              <div class="col-12">
+                <button type="submit" class="btn-primary-custom w-100 justify-content-center" style="padding:0.8rem;">
+                  <i class="bi bi-send-fill"></i>
+                  {% if LANGUAGE_CODE == 'ky' %}Жазылуу{% else %}Записаться{% endif %}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS (compact + modal button) ===== -->
+{% if testimonials %}
+<section class="appointment-section" style="padding:55px 0;">
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="text-center mb-4 fade-up">
+      <span class="hero-badge mb-2 d-inline-flex">
+        <i class="bi bi-chat-quote-fill"></i>
+        {% if LANGUAGE_CODE == 'ky' %}Пикирлер{% else %}Отзывы{% endif %}
+      </span>
+      <h2 style="color:#fff;font-weight:800;font-size:1.9rem;">
+        {% if LANGUAGE_CODE == 'ky' %}Бейтаптарыбыз айтат{% else %}Что говорят наши пациенты{% endif %}
+      </h2>
+    </div>
+
+    <!-- Preview: 3 mini cards -->
+    <div class="testimonials-preview mb-4 fade-up">
+      {% for t in testimonials|slice:":3" %}
+      <div class="testimonial-mini">
+        <div class="stars">{% for i in "12345" %}<i class="bi bi-star{% if forloop.counter <= t.rating %}-fill{% endif %}"></i>{% endfor %}</div>
+        <blockquote>"{{ t.text|truncatewords:20 }}"</blockquote>
+        <div class="author">— {{ t.name }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Button to open full modal -->
+    <div class="text-center fade-up">
+      <button class="btn-outline-custom" data-bs-toggle="modal" data-bs-target="#testimonialsModal">
+        <i class="bi bi-chat-square-dots"></i>
+        {% if LANGUAGE_CODE == 'ky' %}Бардык пикирлерди окуу ({{ testimonials|length }}){% else %}Читать все отзывы ({{ testimonials|length }}){% endif %}
+      </button>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

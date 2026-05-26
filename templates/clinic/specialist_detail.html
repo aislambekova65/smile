@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ specialist.name }} — Smile Estetic{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb-custom">
+      <a href="{% url 'index' %}">{% if LANGUAGE_CODE == 'ky' %}Башкы бет{% else %}Главная{% endif %}</a>
+      <span>/</span>
+      <a href="{% url 'specialists' %}">{% if LANGUAGE_CODE == 'ky' %}Адистер{% else %}Специалисты{% endif %}</a>
+      <span>/</span>{{ specialist.name }}
+    </div>
+    <h1>{{ specialist.name }}</h1>
+    <p>{{ specialist.specialty }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-5">
+      <!-- Photo & info -->
+      <div class="col-lg-4 text-center fade-up">
+        <div class="card-custom p-4">
+          {% if specialist.photo %}
+          <img src="{{ specialist.photo.url }}" alt="{{ specialist.name }}" class="specialist-detail-photo mb-4">
+          {% else %}
+          <div class="specialist-detail-placeholder mb-4 mx-auto">👨‍⚕️</div>
+          {% endif %}
+
+          <h3 style="font-weight:800;color:var(--text);">{{ specialist.name }}</h3>
+          <p class="specialist-specialty fs-6">{{ specialist.specialty }}</p>
+
+          <div class="d-flex justify-content-center gap-3 my-3">
+            <div class="text-center">
+              <div style="font-size:1.8rem;font-weight:800;color:var(--primary);">{{ specialist.experience_years }}</div>
+              <div style="font-size:0.78rem;color:var(--text-muted);">{% if LANGUAGE_CODE == 'ky' %}Жыл{% else %}Лет{% endif %}</div>
+            </div>
+            <div style="width:1px;background:var(--border);"></div>
+            <div class="text-center">
+              <div style="font-size:1.8rem;font-weight:800;color:var(--primary);">{{ schedules.count }}</div>
+              <div style="font-size:0.78rem;color:var(--text-muted);">{% if LANGUAGE_CODE == 'ky' %}Жумуш күн{% else %}Раб. дней{% endif %}</div>
+            </div>
+          </div>
+
+          <a href="{% url 'contact' %}" class="btn-primary-custom w-100 justify-content-center mt-2">
+            <i class="bi bi-calendar-check-fill"></i>
+            {% if LANGUAGE_CODE == 'ky' %}Жазылуу{% else %}Записаться{% endif %}
+          </a>
+        </div>
+      </div>
+
+      <!-- Bio & schedule -->
+      <div class="col-lg-8 fade-up">
+        {% if specialist.bio %}
+        <div class="card-custom p-4 mb-4">
+          <h4 style="font-weight:700;color:var(--text);margin-bottom:1rem;">
+            <i class="bi bi-person-badge" style="color:var(--primary);"></i>
+            {% if LANGUAGE_CODE == 'ky' %}Адис жөнүндө{% else %}О специалисте{% endif %}
+          </h4>
+          <p style="color:var(--text-muted);line-height:1.8;white-space:pre-line;">{{ specialist.bio }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Schedule -->
+        <div class="card-custom p-4">
+          <h4 style="font-weight:700;color:var(--text);margin-bottom:1.25rem;">
+            <i class="bi bi-calendar-week" style="color:var(--primary);"></i>
+            {% if LANGUAGE_CODE == 'ky' %}Иш графиги{% else %}Расписание работы{% endif %}
+          </h4>
+
+          {% if schedules %}
+          <div class="table-responsive">
+            <table class="schedule-table">
+              <thead>
+                <tr>
+                  <th>{% if LANGUAGE_CODE == 'ky' %}Күн{% else %}День{% endif %}</th>
+                  <th>{% if LANGUAGE_CODE == 'ky' %}Иш убактысы{% else %}Время работы{% endif %}</th>
+                  <th>{% if LANGUAGE_CODE == 'ky' %}Абал{% else %}Статус{% endif %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for s in schedules %}
+                <tr>
+                  <td><strong>{{ s.day_name }}</strong></td>
+                  <td>
+                    {% if s.is_working %}
+                    {{ s.start_time|time:"H:i" }} — {{ s.end_time|time:"H:i" }}
+                    {% else %}—{% endif %}
+                  </td>
+                  <td>
+                    {% if s.is_working %}
+                    <span class="badge-working">
+                      <i class="bi bi-check-circle-fill"></i>
+                      {% if LANGUAGE_CODE == 'ky' %}Иштейт{% else %}Работает{% endif %}
+                    </span>
+                    {% else %}
+                    <span class="badge-off">
+                      <i class="bi bi-x-circle-fill"></i>
+                      {% if LANGUAGE_CODE == 'ky' %}Эс алат{% else %}Выходной{% endif %}
+                    </span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p style="color:var(--text-muted);">
+            {% if LANGUAGE_CODE == 'ky' %}График жок{% else %}Расписание не добавлено{% endif %}
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-5 fade-up">
+      <a href="{% url 'specialists' %}" style="color:var(--primary);font-weight:600;">
+        <i class="bi bi-arrow-left"></i>
+        {% if LANGUAGE_CODE == 'ky' %}Бардык адистер{% else %}Все специалисты{% endif %}
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

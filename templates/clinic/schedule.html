@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if LANGUAGE_CODE == 'ky' %}Иш графиги{% else %}Расписание{% endif %} — Smile Estetic{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb-custom">
+      <a href="{% url 'index' %}">{% if LANGUAGE_CODE == 'ky' %}Башкы бет{% else %}Главная{% endif %}</a>
+      <span>/</span>
+      {% if LANGUAGE_CODE == 'ky' %}Иш графиги{% else %}Расписание{% endif %}
+    </div>
+    <h1>{% if LANGUAGE_CODE == 'ky' %}Иш графиги{% else %}Расписание работы{% endif %}</h1>
+    <p>{% if LANGUAGE_CODE == 'ky' %}Ар бир адистин жума боюнча иш графиги{% else %}График работы каждого специалиста на неделю{% endif %}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <!-- General working hours card -->
+    <div class="card-custom p-4 mb-5 fade-up">
+      <div class="row align-items-center g-3">
+        <div class="col-auto">
+          <div class="service-icon" style="width:56px;height:56px;font-size:1.5rem;">
+            <i class="bi bi-clock-fill"></i>
+          </div>
+        </div>
+        <div class="col">
+          <h5 style="font-weight:700;color:var(--text);margin-bottom:0.25rem;">
+            {% if LANGUAGE_CODE == 'ky' %}Клиниканын жалпы иш убактысы{% else %}Общее время работы клиники{% endif %}
+          </h5>
+          <p style="color:var(--text-muted);margin:0;font-size:0.95rem;">
+            <i class="bi bi-calendar3"></i> {{ site_settings.working_hours }}
+          </p>
+        </div>
+        <div class="col-auto">
+          <a href="{% url 'contact' %}" class="btn-primary-custom" style="font-size:0.88rem;padding:0.5rem 1.2rem;">
+            <i class="bi bi-calendar-check"></i>
+            {% if LANGUAGE_CODE == 'ky' %}Жазылуу{% else %}Записаться{% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {% if specialists %}
+      {% for specialist in specialists %}
+      <div class="card-custom mb-4 fade-up">
+        <!-- Specialist header -->
+        <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem;">
+          {% if specialist.photo %}
+          <img src="{{ specialist.photo.url }}" alt="{{ specialist.name }}"
+               style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--border);">
+          {% else %}
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--gradient);display:flex;
+                      align-items:center;justify-content:center;font-size:1.5rem;color:#fff;flex-shrink:0;">
+            👨‍⚕️
+          </div>
+          {% endif %}
+          <div>
+            <h5 style="margin:0;font-weight:700;color:var(--text);">{{ specialist.name }}</h5>
+            <span class="specialist-specialty" style="font-size:0.88rem;">{{ specialist.specialty }}</span>
+          </div>
+          <div class="ms-auto">
+            <a href="{% url 'specialist_detail' specialist.pk %}"
+               style="color:var(--primary);font-size:0.85rem;font-weight:600;text-decoration:none;">
+              {% if LANGUAGE_CODE == 'ky' %}Профиль <i class="bi bi-arrow-right"></i>{% else %}Профиль <i class="bi bi-arrow-right"></i>{% endif %}
+            </a>
+          </div>
+        </div>
+
+        <!-- Schedule table -->
+        <div class="table-responsive">
+          <table class="schedule-table">
+            <thead>
+              <tr>
+                <th>{% if LANGUAGE_CODE == 'ky' %}Күн{% else %}День недели{% endif %}</th>
+                <th>{% if LANGUAGE_CODE == 'ky' %}Башталышы{% else %}Начало{% endif %}</th>
+                <th>{% if LANGUAGE_CODE == 'ky' %}Бүтүшү{% else %}Конец{% endif %}</th>
+                <th>{% if LANGUAGE_CODE == 'ky' %}Абал{% else %}Статус{% endif %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% with schedules=specialist.schedules.all %}
+              {% if schedules %}
+                {% for s in schedules %}
+                <tr>
+                  <td><strong>{{ s.day_name }}</strong></td>
+                  <td>{% if s.is_working %}{{ s.start_time|time:"H:i" }}{% else %}—{% endif %}</td>
+                  <td>{% if s.is_working %}{{ s.end_time|time:"H:i" }}{% else %}—{% endif %}</td>
+                  <td>
+                    {% if s.is_working %}
+                    <span class="badge-working"><i class="bi bi-check-circle-fill"></i>
+                      {% if LANGUAGE_CODE == 'ky' %}Иштейт{% else %}Работает{% endif %}
+                    </span>
+                    {% else %}
+                    <span class="badge-off"><i class="bi bi-x-circle-fill"></i>
+                      {% if LANGUAGE_CODE == 'ky' %}Эс алат{% else %}Выходной{% endif %}
+                    </span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="4" style="text-align:center;color:var(--text-muted);padding:1.5rem;">
+                  {% if LANGUAGE_CODE == 'ky' %}График кошулган жок{% else %}График не добавлен{% endif %}
+                </td>
+              </tr>
+              {% endif %}
+              {% endwith %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endfor %}
+
+    {% else %}
+    <div class="text-center py-5 fade-up">
+      <div style="font-size:4rem;margin-bottom:1rem;">📅</div>
+      <h4 style="color:var(--text-muted);">
+        {% if LANGUAGE_CODE == 'ky' %}График жок{% else %}Расписание не добавлено{% endif %}
+      </h4>
+      <p style="color:var(--text-muted);">
+        {% if LANGUAGE_CODE == 'ky' %}Администратор графикти кошот{% else %}Администратор добавит расписание в ближайшее время{% endif %}
+      </p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

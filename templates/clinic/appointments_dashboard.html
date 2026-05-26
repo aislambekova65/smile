@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Записи клиентов — Smile Estetic{% endblock %}
+
+{% block extra_css %}
+<style>
+  .filter-bar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.5rem; margin-bottom: 1.5rem; }
+  .filter-bar .form-control, .filter-bar .form-select { font-size: 0.88rem; padding: 0.45rem 0.8rem; border-radius: 8px !important; }
+  .table-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+  .status-select { font-size: 0.8rem; padding: 3px 8px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--input-bg); color: var(--text); cursor: pointer; }
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-muted); }
+  .empty-state i { font-size: 3.5rem; display: block; margin-bottom: 1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb-custom">
+      <a href="{% url 'index' %}">Главная</a> <span>/</span> Записи клиентов
+    </div>
+    <h1><i class="bi bi-people-fill" style="font-size:1.8rem;"></i> Записи клиентов</h1>
+    <p>Все заявки на приём — управление статусами</p>
+  </div>
+</section>
+
+<section class="section" style="padding:40px 0 60px;">
+  <div class="container">
+
+    <!-- Stats row -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="dashboard-stat">
+          <div class="dashboard-stat-icon" style="background:linear-gradient(135deg,#667eea,#764ba2);">
+            <i class="bi bi-calendar-check"></i>
+          </div>
+          <div>
+            <div class="dashboard-stat-num">{{ counts.all }}</div>
+            <div class="dashboard-stat-lbl">Всего записей</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="dashboard-stat">
+          <div class="dashboard-stat-icon" style="background:linear-gradient(135deg,#f093fb,#f5576c);">
+            <i class="bi bi-bell-fill"></i>
+          </div>
+          <div>
+            <div class="dashboard-stat-num">{{ counts.new }}</div>
+            <div class="dashboard-stat-lbl">Новых</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="dashboard-stat">
+          <div class="dashboard-stat-icon" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">
+            <i class="bi bi-check2-circle"></i>
+          </div>
+          <div>
+            <div class="dashboard-stat-num">{{ counts.confirmed }}</div>
+            <div class="dashboard-stat-lbl">Подтверждено</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="dashboard-stat">
+          <div class="dashboard-stat-icon" style="background:linear-gradient(135deg,#43e97b,#38f9d7);">
+            <i class="bi bi-patch-check-fill"></i>
+          </div>
+          <div>
+            <div class="dashboard-stat-num">{{ counts.completed }}</div>
+            <div class="dashboard-stat-lbl">Завершено</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-3 col-6">
+          <label class="form-label" style="font-size:0.8rem;font-weight:600;color:var(--text-muted);margin-bottom:4px;">Статус</label>
+          <select name="status" class="form-select">
+            <option value="">Все статусы</option>
+            {% for val, lbl in status_choices %}
+            <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ lbl }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3 col-6">
+          <label class="form-label" style="font-size:0.8rem;font-weight:600;color:var(--text-muted);margin-bottom:4px;">Специалист</label>
+          <select name="specialist" class="form-select">
+            <option value="">Все специалисты</option>
+            {% for sp in specialists %}
+            <option value="{{ sp.pk }}" {% if specialist_filter == sp.pk|stringformat:"s" %}selected{% endif %}>{{ sp.name_ru }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3 col-6">
+          <label class="form-label" style="font-size:0.8rem;font-weight:600;color:var(--text-muted);margin-bottom:4px;">Дата</label>
+          <input type="date" name="date" value="{{ date_filter }}" class="form-control">
+        </div>
+        <div class="col-md-3 col-6 d-flex gap-2">
+          <button type="submit" class="btn-primary-custom" style="padding:0.48rem 1.2rem;font-size:0.88rem;flex:1;justify-content:center;">
+            <i class="bi bi-funnel-fill"></i> Фильтр
+          </button>
+          <a href="{% url 'appointments_dashboard' %}" class="btn-primary-custom" style="padding:0.48rem 1rem;font-size:0.88rem;background:var(--bg-section);border:1.5px solid var(--border);color:var(--text);box-shadow:none;">
+            <i class="bi bi-x-lg"></i>
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Table -->
+    {% if appointments %}
+    <div class="table-wrap">
+      <div class="table-responsive">
+        <table class="appointments-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Пациент</th>
+              <th>Телефон</th>
+              <th>Специалист</th>
+              <th>Услуга</th>
+              <th>Дата</th>
+              <th>Время</th>
+              <th>Статус</th>
+              <th>Изменить</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for app in appointments %}
+            <tr>
+              <td style="color:var(--text-muted);font-size:0.8rem;">{{ app.pk }}</td>
+              <td>
+                <strong>{{ app.patient_name }}</strong>
+                {% if app.message %}
+                <div style="font-size:0.76rem;color:var(--text-muted);margin-top:2px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ app.message }}">
+                  <i class="bi bi-chat-left-text"></i> {{ app.message|truncatewords:6 }}
+                </div>
+                {% endif %}
+              </td>
+              <td>
+                <a href="tel:{{ app.phone }}" style="font-weight:600;white-space:nowrap;">
+                  <i class="bi bi-telephone" style="color:var(--accent);"></i> {{ app.phone }}
+                </a>
+              </td>
+              <td>
+                {% if app.specialist %}{{ app.specialist.name_ru }}{% else %}<span style="color:var(--text-muted);">—</span>{% endif %}
+              </td>
+              <td>
+                {% if app.service %}<span style="font-size:0.83rem;">{{ app.service.name_ru }}</span>
+                {% else %}<span style="color:var(--text-muted);">—</span>{% endif %}
+              </td>
+              <td style="white-space:nowrap;font-weight:600;">
+                <i class="bi bi-calendar3" style="color:var(--primary);"></i> {{ app.preferred_date|date:"d.m.Y" }}
+              </td>
+              <td style="white-space:nowrap;">
+                {% if app.preferred_time %}
+                <i class="bi bi-clock" style="color:var(--accent);"></i> {{ app.preferred_time|time:"H:i" }}
+                {% else %}<span style="color:var(--text-muted);">—</span>{% endif %}
+              </td>
+              <td>
+                <span class="status-badge status-{{ app.status }}">
+                  {% for val, lbl in status_choices %}{% if val == app.status %}{{ lbl }}{% endif %}{% endfor %}
+                </span>
+              </td>
+              <td>
+                <form method="post" style="display:flex;align-items:center;gap:6px;">
+                  {% csrf_token %}
+                  <input type="hidden" name="app_id" value="{{ app.pk }}">
+                  <select name="new_status" class="status-select" onchange="this.form.submit()" title="Изменить статус">
+                    {% for val, lbl in status_choices %}
+                    <option value="{{ val }}" {% if val == app.status %}selected{% endif %}>{{ lbl }}</option>
+                    {% endfor %}
+                  </select>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="color:var(--text-muted);font-size:0.82rem;margin-top:0.75rem;text-align:right;">
+      Показано: <strong>{{ appointments|length }}</strong> записей
+    </div>
+
+    {% else %}
+    <div class="table-wrap">
+      <div class="empty-state">
+        <i class="bi bi-calendar-x"></i>
+        <h5 style="color:var(--text);font-weight:700;">Записей не найдено</h5>
+        <p style="font-size:0.9rem;">
+          {% if status_filter or specialist_filter or date_filter %}
+            Попробуйте изменить фильтры
+          {% else %}
+            Когда клиенты запишутся, они появятся здесь
+          {% endif %}
+        </p>
+        {% if status_filter or specialist_filter or date_filter %}
+        <a href="{% url 'appointments_dashboard' %}" class="btn-primary-custom mt-2" style="font-size:0.88rem;padding:0.5rem 1.3rem;">
+          <i class="bi bi-x-circle"></i> Сбросить фильтры
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick links -->
+    <div class="d-flex gap-3 mt-4 flex-wrap">
+      <a href="/admin/clinic/appointment/" class="btn-primary-custom" style="font-size:0.85rem;padding:0.5rem 1.2rem;">
+        <i class="bi bi-gear-fill"></i> Полная панель (Админ)
+      </a>
+      <a href="{% url 'index' %}" style="color:var(--text-muted);font-size:0.88rem;display:flex;align-items:center;gap:0.4rem;align-self:center;">
+        <i class="bi bi-arrow-left"></i> На сайт
+      </a>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
