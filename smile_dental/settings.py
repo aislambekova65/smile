@@ -5,9 +5,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-smile-estetic-2024-change-in-production-xyz123')
 
-DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes')
+# Безопасный дефолт: в проде должен быть False, локально явно ставится DEBUG=True в .env
+DEBUG = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = os.environ.get(
+    'ALLOWED_HOSTS',
+    '.vercel.app,localhost,127.0.0.1'
+).split(',')
+
+# CSRF: разрешаем формы из Vercel-доменов (нужно для админ-логина при DEBUG=False)
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    'CSRF_TRUSTED_ORIGINS',
+    'https://*.vercel.app'
+).split(',')
+
+# Vercel завершает HTTPS на своём прокси и проксирует через HTTP внутрь функции
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Cookie только по HTTPS — на Vercel всегда HTTPS, поэтому безопасно включить.
+# Локально под HTTP админка работать не будет — при необходимости переопределяем через .env
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 
 
 INSTALLED_APPS = [
